@@ -18,7 +18,7 @@ const sentences = [
 ];
 
 // Variables
-let startTime, endTime, currentSentence, timer;
+let startTime, currentSentence, timer;
 let timeLeft = 60;
 let highScore = 0;
 
@@ -31,11 +31,15 @@ function getRandomSentence() {
 // Start Game
 startBtn.addEventListener("click", () => {
   resetGame();
+
+  // Generate and display a random sentence
   currentSentence = getRandomSentence();
   sentenceEl.textContent = currentSentence;
   inputEl.disabled = false;
   inputEl.value = "";
   inputEl.focus();
+
+  // Record start time and start countdown
   startTime = new Date().getTime();
   timer = setInterval(updateCountdown, 1000);
 });
@@ -45,33 +49,43 @@ function updateCountdown() {
   timeLeft--;
   countdownEl.textContent = `Time Left: ${timeLeft}s`;
   if (timeLeft <= 0) {
-    endGame();
+    endGame("Time's up! Press Start to try again.");
   }
 }
 
-// Input Listener
+// Input Event Listener for Real-Time Updates
 inputEl.addEventListener("input", () => {
   const typedText = inputEl.value;
 
+  // Calculate and display WPM and accuracy in real-time
+  updateStats(typedText);
+
+  // Stop the game automatically if the user types the sentence correctly
   if (typedText === currentSentence) {
-    endTime = new Date().getTime();
-    const timeTaken = (endTime - startTime) / 1000;
-    const wordCount = currentSentence.split(" ").length;
-    const wpm = Math.round((wordCount / timeTaken) * 60);
-    const accuracy = calculateAccuracy(currentSentence, typedText);
-
-    wpmEl.textContent = `WPM: ${wpm}`;
-    accuracyEl.textContent = `Accuracy: ${accuracy}%`;
-
-    if (wpm > highScore) {
-      highScore = wpm;
-      highScoreEl.textContent = `High Score: ${highScore} WPM`;
-      localStorage.setItem("highScore", highScore);
-    }
-
-    resetGame();
+    endGame("Great job! You completed the sentence!");
   }
 });
+
+// Update WPM and Accuracy
+function updateStats(typedText) {
+  const timeElapsed = (new Date().getTime() - startTime) / 1000; // Time in seconds
+  const wordCount = currentSentence.split(" ").length;
+
+  // Update WPM
+  const wpm = Math.round((wordCount / timeElapsed) * 60);
+  wpmEl.textContent = `WPM: ${wpm}`;
+
+  // Update Accuracy
+  const accuracy = calculateAccuracy(currentSentence, typedText);
+  accuracyEl.textContent = `Accuracy: ${accuracy}%`;
+
+  // Check and Update High Score
+  if (wpm > highScore) {
+    highScore = wpm;
+    highScoreEl.textContent = `High Score: ${highScore} WPM`;
+    localStorage.setItem("highScore", highScore);
+  }
+}
 
 // Accuracy Calculation
 function calculateAccuracy(sentence, typedText) {
@@ -79,7 +93,7 @@ function calculateAccuracy(sentence, typedText) {
   const typedChars = typedText.split("");
   let correctChars = 0;
 
-  for (let i = 0; i < sentenceChars.length; i++) {
+  for (let i = 0; i < typedChars.length; i++) {
     if (sentenceChars[i] === typedChars[i]) {
       correctChars++;
     }
@@ -89,11 +103,11 @@ function calculateAccuracy(sentence, typedText) {
 }
 
 // End Game
-function endGame() {
+function endGame(message) {
   clearInterval(timer);
   inputEl.disabled = true;
+  sentenceEl.textContent = message;
   startBtn.disabled = false;
-  sentenceEl.textContent = "Time's up! Press Start to try again.";
 }
 
 // Reset Game
@@ -101,6 +115,8 @@ function resetGame() {
   clearInterval(timer);
   timeLeft = 60;
   countdownEl.textContent = `Time Left: 60s`;
+  wpmEl.textContent = "WPM: 0";
+  accuracyEl.textContent = "Accuracy: 0%";
   startBtn.disabled = true;
 }
 
