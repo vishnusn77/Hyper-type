@@ -1,3 +1,4 @@
+/* General Styling */
 body {
     font-family: Arial, sans-serif;
     text-align: center;
@@ -16,11 +17,34 @@ body {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
   }
   
+  /* Header */
   h1 {
     font-size: 36px;
     color: #00eaff;
   }
   
+  /* Settings */
+  .settings {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px 0;
+  }
+  
+  #toggle-theme {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #00eaff;
+    color: #1e1e2f;
+    cursor: pointer;
+  }
+  
+  #toggle-theme:hover {
+    background-color: #00a3cc;
+  }
+  
+  /* Sentence and Input */
   #sentence {
     font-size: 18px;
     margin: 20px 0;
@@ -40,6 +64,11 @@ body {
     color: #ffffff;
   }
   
+  #input:disabled {
+    background-color: #3e3e4f;
+  }
+  
+  /* Start Button */
   #start-btn {
     padding: 10px 20px;
     font-size: 16px;
@@ -54,6 +83,7 @@ body {
     background-color: #00a3cc;
   }
   
+  /* Results */
   .results {
     margin-top: 20px;
   }
@@ -61,5 +91,24 @@ body {
   .results p {
     font-size: 18px;
     margin: 5px 0;
+  }
+  
+  /* Light Mode */
+  body.light-mode {
+    background-color: #ffffff;
+    color: #000000;
+  }
+  
+  body.light-mode .container {
+    background: #f0f0f0;
+  }
+  
+  body.light-mode #toggle-theme {
+    background-color: #444;
+    color: #ffffff;
+  }
+  
+  body.light-mode #toggle-theme:hover {
+    background-color: #666;
   }
   

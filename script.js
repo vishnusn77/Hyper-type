@@ -1,68 +1,75 @@
-const sentences = [
-    "The quick brown fox jumps over the lazy dog.",
-    "HyperType is a fun typing challenge.",
-    "Speed and accuracy are key to success.",
-    "Practice makes perfect in typing.",
-    "How fast can you type this sentence?"
-  ];
-  
-  function getRandomSentence() {
-    const randomIndex = Math.floor(Math.random() * sentences.length);
-    return sentences[randomIndex];
-  }
-
-  // Elements
+// Elements
 const sentenceEl = document.getElementById("sentence");
 const inputEl = document.getElementById("input");
 const startBtn = document.getElementById("start-btn");
 const wpmEl = document.getElementById("wpm");
 const accuracyEl = document.getElementById("accuracy");
+const countdownEl = document.getElementById("countdown");
+const highScoreEl = document.getElementById("high-score");
+const toggleThemeBtn = document.getElementById("toggle-theme");
+
+// Sentences Array
+const sentences = [
+  "The quick brown fox jumps over the lazy dog.",
+  "HyperType is a fun typing challenge.",
+  "Speed and accuracy are key to success.",
+  "Practice makes perfect in typing.",
+  "How fast can you type this sentence?"
+];
 
 // Variables
-let startTime, endTime, currentSentence;
+let startTime, endTime, currentSentence, timer;
+let timeLeft = 60;
+let highScore = 0;
 
-// Start Button Click Event
+// Random Sentence Generator
+function getRandomSentence() {
+  const randomIndex = Math.floor(Math.random() * sentences.length);
+  return sentences[randomIndex];
+}
+
+// Start Game
 startBtn.addEventListener("click", () => {
-  // Reset Results
-  wpmEl.textContent = "WPM: 0";
-  accuracyEl.textContent = "Accuracy: 0%";
-
-  // Get Random Sentence
+  resetGame();
   currentSentence = getRandomSentence();
   sentenceEl.textContent = currentSentence;
-
-  // Enable Input and Focus
-  inputEl.value = "";
   inputEl.disabled = false;
+  inputEl.value = "";
   inputEl.focus();
-
-  // Disable Start Button and Start Timer
-  startBtn.disabled = true;
   startTime = new Date().getTime();
+  timer = setInterval(updateCountdown, 1000);
 });
 
-// Input Event
+// Update Countdown Timer
+function updateCountdown() {
+  timeLeft--;
+  countdownEl.textContent = `Time Left: ${timeLeft}s`;
+  if (timeLeft <= 0) {
+    endGame();
+  }
+}
+
+// Input Listener
 inputEl.addEventListener("input", () => {
   const typedText = inputEl.value;
 
-  // Check if Typed Text Matches Sentence
   if (typedText === currentSentence) {
-    // Stop Timer
     endTime = new Date().getTime();
-    const timeTaken = (endTime - startTime) / 1000; // seconds
-
-    // Calculate WPM
+    const timeTaken = (endTime - startTime) / 1000;
     const wordCount = currentSentence.split(" ").length;
     const wpm = Math.round((wordCount / timeTaken) * 60);
-    wpmEl.textContent = `WPM: ${wpm}`;
-
-    // Calculate Accuracy
     const accuracy = calculateAccuracy(currentSentence, typedText);
+
+    wpmEl.textContent = `WPM: ${wpm}`;
     accuracyEl.textContent = `Accuracy: ${accuracy}%`;
 
-    // Disable Input and Enable Start Button
-    inputEl.disabled = true;
-    startBtn.disabled = false;
+    if (wpm > highScore) {
+      highScore = wpm;
+      highScoreEl.textContent = `High Score: ${highScore} WPM`;
+      localStorage.setItem("highScore", highScore);
+    }
+
+    resetGame();
   }
 });
 
@@ -80,3 +87,36 @@ function calculateAccuracy(sentence, typedText) {
 
   return Math.round((correctChars / sentenceChars.length) * 100);
 }
+
+// End Game
+function endGame() {
+  clearInterval(timer);
+  inputEl.disabled = true;
+  startBtn.disabled = false;
+  sentenceEl.textContent = "Time's up! Press Start to try again.";
+}
+
+// Reset Game
+function resetGame() {
+  clearInterval(timer);
+  timeLeft = 60;
+  countdownEl.textContent = `Time Left: 60s`;
+  startBtn.disabled = true;
+}
+
+// Load High Score
+window.onload = () => {
+  const savedHighScore = localStorage.getItem("highScore");
+  if (savedHighScore) {
+    highScore = parseInt(savedHighScore, 10);
+    highScoreEl.textContent = `High Score: ${highScore} WPM`;
+  }
+};
+
+// Toggle Theme
+toggleThemeBtn.addEventListener("click", () => {
+  document.body.classList.toggle("light-mode");
+  toggleThemeBtn.textContent = document.body.classList.contains("light-mode")
+    ? "🌙 Dark Mode"
+    : "☀️ Light Mode";
+});
