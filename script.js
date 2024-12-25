@@ -8,12 +8,14 @@ const wpmEl = document.getElementById("wpm");
 const accuracyEl = document.getElementById("accuracy");
 const countdownEl = document.getElementById("countdown");
 const highScoreEl = document.getElementById("high-score");
-const toggleThemeBtn = document.getElementById("toggle-theme");
+const themeSwitch = document.getElementById("theme-switch");
+const themeText = document.getElementById("theme-mode");
 
 // New Game Button (added dynamically)
 let newGameBtn = document.createElement("button");
 newGameBtn.textContent = "New Game";
-newGameBtn.style.display = "none";
+newGameBtn.classList.add("action-btn"); // Add the action-btn class for consistent styling
+newGameBtn.style.display = "none"; // Initially hidden
 newGameBtn.addEventListener("click", startNewGame);
 document.querySelector(".game-buttons").appendChild(newGameBtn);
 
@@ -189,17 +191,22 @@ function resetGameForNextRound() {
 
 // Quit Game
 quitBtn.addEventListener("click", () => {
+  clearInterval(timer); // Stop the timer
   displayFinalScore();
 });
 
 // Display Final Score
 function displayFinalScore() {
+  clearInterval(timer); // Stop the timer when the game ends
+
   // Handle cases where no rounds were completed
   if (roundScores.length === 0) {
     sentenceEl.innerHTML = `
-      Game Over!<br>
-      No rounds were completed.<br>
-      Press "New Game" to start again!
+      <div style="text-align: center;">
+        Game Over!<br>
+        No rounds were completed.<br>
+        Press "New Game" to start again!
+      </div>
     `;
     inputEl.disabled = true;
     startBtn.style.display = "none";
@@ -227,11 +234,13 @@ function displayFinalScore() {
 
   // Display the final results
   sentenceEl.innerHTML = `
-    Game Over!<br>
-    Total Score: <strong>${totalScore} WPM</strong><br>
-    Average WPM: <strong>${averageWPM}</strong><br>
-    Average Accuracy: <strong>${averageAccuracy}%</strong><br>
-    <p>Press "New Game" to start again!</p>
+    <div style="text-align: center;">
+      Game Over!<br>
+      Total Score: <strong>${totalScore} WPM</strong><br>
+      Average WPM: <strong>${averageWPM}</strong><br>
+      Average Accuracy: <strong>${averageAccuracy}%</strong><br>
+      <p>Press "New Game" to start again!</p>
+    </div>
   `;
 
   inputEl.disabled = true;
@@ -240,6 +249,7 @@ function displayFinalScore() {
   quitBtn.style.display = "none";
   newGameBtn.style.display = "inline-block"; // Show "New Game" button
 }
+
 
 // Start New Game
 function startNewGame() {
@@ -263,16 +273,20 @@ function resetGame() {
   nextRoundBtn.style.display = "none";
 }
 
-// Reset High Score at the start of the session
+// Theme Toggle Functionality
+themeSwitch.addEventListener("change", () => {
+  const isDarkMode = document.body.classList.toggle("dark-mode");
+
+  // Update the theme text
+  themeText.textContent = isDarkMode ? "Dark" : "Light";
+});
+
+// Set the initial state for "Dark" as default
 window.onload = () => {
   highScore = 0; // Reset high score for the session
   highScoreEl.textContent = `High Score: ${highScore} WPM`;
-};
 
-// Toggle Theme
-toggleThemeBtn.addEventListener("click", () => {
-  document.body.classList.toggle("light-mode");
-  toggleThemeBtn.textContent = document.body.classList.contains("light-mode")
-    ? "🌙 Dark Mode"
-    : "☀️ Light Mode";
-});
+  // Initialize the theme
+  themeSwitch.checked = true; // Default dark mode
+  themeText.textContent = "Dark"; // Default text
+};

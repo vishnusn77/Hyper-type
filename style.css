@@ -3,78 +3,146 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Arial', sans-serif;
+  font-family: 'Inter', sans-serif;
 }
 
 /* Body */
 body {
+  background: var(--background-color);
+  color: var(--text-color);
   display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background: linear-gradient(135deg, #6a11cb, #2575fc);
-  color: #fff;
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  height: 100vh; /* Full viewport height */
   margin: 0;
+  transition: background 0.3s ease, color 0.3s ease;
+  flex-direction: column; /* Stack header and container */
 }
+
+
+/* Theme Variables */
+:root {
+  --background-color: #fdfdfd;
+  --text-color: #333;
+  --card-color: #ffffff;
+  --button-color: #0078d4;
+  --button-hover-color: #005bb5;
+  --input-bg-color: #f0f0f0;
+}
+
+body.dark-mode {
+  --background-color: #181818;
+  --text-color: #e0e0e0;
+  --card-color: #252525;
+  --button-color: #4a90e2;
+  --button-hover-color: #367bb8;
+  --input-bg-color: #2c2c2c;
+}
+
+/* Main Header */
+.main-header {
+  text-align: center;
+  margin-bottom: 20px;
+  display: block; /* Ensures proper block layout for the header elements */
+}
+
+.main-title {
+  font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: var(--text-color);
+  display: block; /* Forces title to occupy its own line */
+  margin-bottom: 5px; /* Adds space between title and tagline */
+}
+
+.tagline {
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  font-size: 1.1rem;
+  color: var(--text-color);
+  font-style: bold;
+  margin: 0; /* Removes unnecessary margin */
+  display: block; /* Ensures tagline is on its own line */
+}
+
 
 /* Container */
 .container {
-  background: rgba(0, 0, 0, 0.8);
-  border-radius: 15px;
-  padding: 30px;
   width: 90%;
-  max-width: 600px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+  max-width: 600px; /* Increased width */
+  background: var(--card-color);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  padding: 20px;
   text-align: center;
+  transition: background 0.3s ease;
+  margin-top: 20px; /* Add space between header and container */
 }
 
-/* Title */
-.game-title {
-  font-size: 2rem;
+/* Header (inside container) */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 20px;
-  color: #ffcc00;
-  text-shadow: 2px 2px 8px #000;
+}
+
+.game-title {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: var(--text-color);
+}
+
+/* Countdown */
+.countdown {
+  font-size: 1rem;
+  margin: 10px 0;
+  color: var(--text-color);
+}
+
+/* Game Header */
+.game-header {
+  display: flex;
+  justify-content: space-between; /* Align items to the left and right */
+  align-items: center;
+  margin-bottom: 20px;
 }
 
 /* High Score */
 .high-score {
-  font-size: 1.2rem;
-  margin-bottom: 10px;
+  font-size: 1rem;
+  font-weight: bold;
+  color: var(--text-color);
+  margin: 0;
 }
 
-/* Info Section */
-.info {
-  margin-bottom: 20px;
-}
-
-.countdown {
-  font-size: 1.1rem;
-  margin-bottom: 10px;
-  color: #00e6e6;
-}
 
 /* Sentence Box */
 .sentence-box {
+  background: var(--input-bg-color);
+  padding: 15px;
+  border-radius: 8px;
   margin-bottom: 20px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
-  padding: 20px;
-  font-size: 1.1rem;
-  line-height: 1.5;
   min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: left;
+  font-size: 1rem;
+  color: var(--text-color);
 }
 
 /* Text Area */
 .input-box {
   width: 100%;
-  padding: 15px;
+  padding: 12px 15px;
   font-size: 1rem;
   border: none;
-  border-radius: 10px;
+  border-radius: 8px;
   outline: none;
+  background: var(--input-bg-color);
+  color: var(--text-color);
   margin-bottom: 20px;
-  background: #222;
-  color: #fff;
+  resize: none;
 }
 
 /* Results */
@@ -85,70 +153,111 @@ body {
 }
 
 .wpm, .accuracy {
-  font-size: 1.1rem;
+  font-size: 1rem;
+  font-weight: bold;
+  color: var(--text-color);
 }
 
 /* Buttons */
 .action-btn {
   padding: 10px 20px;
   font-size: 1rem;
-  margin: 5px;
   border: none;
-  border-radius: 5px;
+  border-radius: 6px;
   cursor: pointer;
-  background: #2575fc;
+  background: var(--button-color);
   color: #fff;
   transition: background 0.3s ease;
 }
 
 .action-btn:hover {
-  background: #6a11cb;
+  background: var(--button-hover-color);
 }
 
-.theme-btn {
-  background: #ffcc00;
-  color: #000;
-  font-weight: bold;
-  border-radius: 5px;
-  padding: 10px 15px;
+/* Theme Toggle */
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  gap: 10px; /* Adds spacing between text and toggle button */
+}
+
+.theme-text {
+  font-size: 0.8rem; /* Slightly smaller text */
+  color: var(--text-color);
+  opacity: 0.8; /* Subtle appearance */
+}
+
+
+#theme-switch {
+  display: none; /* Hide the default checkbox */
+}
+
+.toggle-label {
+  width: 50px;
+  height: 24px;
+  background: var(--button-color);
+  border-radius: 50px;
+  position: relative;
   cursor: pointer;
-  transition: background 0.3s ease, transform 0.2s ease;
+  transition: background 0.3s ease;
 }
 
-.theme-btn:hover {
-  background: #e6b800;
-  transform: scale(1.05);
+.toggle-label:hover {
+  background: var(--button-hover-color);
 }
 
-/* Dark Mode */
-body.light-mode {
+.toggle-label .toggle-ball {
+  width: 20px;
+  height: 20px;
   background: #fff;
-  color: #000;
+  border-radius: 50%;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  transition: all 0.3s ease;
 }
 
-body.light-mode .container {
-  background: #f9f9f9;
+#theme-switch:checked + .toggle-label {
+  background: var(--button-hover-color);
 }
 
-body.light-mode .theme-btn {
-  background: #444;
-  color: #fff;
+#theme-switch:checked + .toggle-label .toggle-ball {
+  transform: translateX(26px);
 }
 
-body.light-mode .action-btn {
-  background: #444;
-  color: #fff;
+/* Title Container */
+.title-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px; /* Space between icon and title */
 }
 
-body.light-mode .action-btn:hover {
-  background: #666;
+/* Title Icon */
+.title-icon {
+  width: 40px; /* Adjust size for minimal look */
+  height: 40px;
 }
 
-body.light-mode .sentence-box {
-  background: #e6e6e6;
-}
 
-body.light-mode .input-box {
-  background: #ddd;
-  color: #000;
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    padding: 15px;
+  }
+
+  .main-title {
+    font-size: 2rem;
+  }
+
+  .tagline {
+    font-size: 1rem;
+  }
+
+  .action-btn, .theme-btn {
+    padding: 8px 15px;
+    font-size: 0.9rem;
+  }
 }
