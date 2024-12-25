@@ -14,14 +14,14 @@
       <p id="high-score">High Score: 0 WPM</p>
     </div>
     <p id="countdown">Time Left: 60s</p>
-    <p id="sentence">Press "Start" to begin!</p>
-    <textarea id="input" disabled placeholder="Type here..."></textarea>
+    <p id="sentence"></p> <!-- This displays the sentence with progress -->
+    <textarea id="input" style="opacity: 0; position: absolute;"></textarea> <!-- Hidden input -->
     <button id="start-btn">Start</button>
     <div class="results">
       <p id="wpm">WPM: 0</p>
       <p id="accuracy">Accuracy: 0%</p>
     </div>
-  </div>
+  </div>  
   <script src="script.js"></script>
 </body>
 </html>

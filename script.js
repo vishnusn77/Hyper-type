@@ -34,7 +34,7 @@ startBtn.addEventListener("click", () => {
 
   // Generate and display a random sentence
   currentSentence = getRandomSentence();
-  sentenceEl.textContent = currentSentence;
+  displaySentenceProgress(""); // Initially display empty progress
   inputEl.disabled = false;
   inputEl.value = "";
   inputEl.focus();
@@ -57,7 +57,10 @@ function updateCountdown() {
 inputEl.addEventListener("input", () => {
   const typedText = inputEl.value;
 
-  // Calculate and display WPM and accuracy in real-time
+  // Display typing progress
+  displaySentenceProgress(typedText);
+
+  // Update WPM and Accuracy in real time
   updateStats(typedText);
 
   // Stop the game automatically if the user types the sentence correctly
@@ -66,25 +69,41 @@ inputEl.addEventListener("input", () => {
   }
 });
 
+// Display Typing Progress
+function displaySentenceProgress(typedText) {
+  const sentenceArray = currentSentence.split("");
+  const typedArray = typedText.split("");
+
+  let formattedSentence = "";
+
+  for (let i = 0; i < sentenceArray.length; i++) {
+    if (typedArray[i] === undefined) {
+      // If not yet typed, show in default color
+      formattedSentence += `<span>${sentenceArray[i]}</span>`;
+    } else if (typedArray[i] === sentenceArray[i]) {
+      // Correctly typed character (green)
+      formattedSentence += `<span style="color: green;">${sentenceArray[i]}</span>`;
+    } else {
+      // Incorrectly typed character (red)
+      formattedSentence += `<span style="color: red;">${sentenceArray[i]}</span>`;
+    }
+  }
+
+  sentenceEl.innerHTML = formattedSentence;
+}
+
 // Update WPM and Accuracy
 function updateStats(typedText) {
-  const timeElapsed = (new Date().getTime() - startTime) / 1000; // Time in seconds
+  const elapsedTime = (new Date().getTime() - startTime) / 1000; // Time in seconds
   const wordCount = currentSentence.split(" ").length;
 
   // Update WPM
-  const wpm = Math.round((wordCount / timeElapsed) * 60);
+  const wpm = Math.round((wordCount / elapsedTime) * 60);
   wpmEl.textContent = `WPM: ${wpm}`;
 
   // Update Accuracy
   const accuracy = calculateAccuracy(currentSentence, typedText);
   accuracyEl.textContent = `Accuracy: ${accuracy}%`;
-
-  // Check and Update High Score
-  if (wpm > highScore) {
-    highScore = wpm;
-    highScoreEl.textContent = `High Score: ${highScore} WPM`;
-    localStorage.setItem("highScore", highScore);
-  }
 }
 
 // Accuracy Calculation
@@ -94,7 +113,7 @@ function calculateAccuracy(sentence, typedText) {
   let correctChars = 0;
 
   for (let i = 0; i < typedChars.length; i++) {
-    if (sentenceChars[i] === typedChars[i]) {
+    if (typedChars[i] === sentenceChars[i]) {
       correctChars++;
     }
   }
