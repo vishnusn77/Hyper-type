@@ -21,11 +21,16 @@ document.querySelector(".game-buttons").appendChild(newGameBtn);
 
 // Sentences Array
 const sentences = [
-  "The quick brown fox jumps over the lazy dog.",
-  "HyperType is a fun typing challenge.",
-  "Speed and accuracy are key to success.",
-  "Practice makes perfect in typing.",
-  "How fast can you type this sentence?"
+  "The quick brown fox jumps over the lazy dog while the sun sets behind the mountains and the stars begin to sparkle in the night sky.",
+  "A journey of a thousand miles begins with a single step, but it also requires courage, determination, and perseverance to reach the destination.",
+  "In the age of rapid technological advancements, staying updated with the latest innovations has become an essential skill for survival and growth.",
+  "Typing games are an excellent way to improve speed, accuracy, and confidence while also enhancing focus and hand-eye coordination.",
+  "The curious cat cautiously approached the garden, where butterflies danced above colorful flowers blooming under the bright summer sun.",
+  "If you believe in yourself and work hard every single day, success will eventually knock on your door and reward your relentless efforts.",
+  "The city buzzed with activity as people hurried through the streets, unaware of the magical surprise awaiting them around the next corner.",
+  "Learning how to code is like learning a new language, opening doors to endless possibilities, creativity, and problem-solving adventures.",
+  "On a cold winter morning, the little boy bundled up in a warm coat and scarf to explore the snow-covered park filled with wonders.",
+  "The spaceship soared into the galaxy, leaving behind the vibrant blue planet, as its crew embarked on a daring mission to uncover cosmic mysteries."
 ];
 
 // Variables
@@ -39,8 +44,7 @@ let highScore = 0; // Reset high score for the session
 
 // Random Sentence Generator
 function getRandomSentence() {
-  const randomIndex = Math.floor(Math.random() * sentences.length);
-  return sentences[randomIndex];
+  return sentences[currentRound - 1]; // Use current round to pick the sentence in order
 }
 
 // Start Game
@@ -289,4 +293,8 @@ window.onload = () => {
   // Initialize the theme
   themeSwitch.checked = true; // Default dark mode
   themeText.textContent = "Dark"; // Default text
+
+  // Disable copy-paste in the input box
+  inputEl.addEventListener("paste", (e) => e.preventDefault());
+  inputEl.addEventListener("copy", (e) => e.preventDefault());
 };
