@@ -3,27 +3,31 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Typing Speed Test Game</title>
+  <title>Typing Speed Test</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="container">
-    <h1>Typing Speed Test Game</h1>
+    <h1 class="game-title">HyperType - Typing Speed Test</h1>
     <div class="settings">
-      <button id="toggle-theme">🌙 Dark Mode</button>
-      <p id="high-score">High Score: 0 WPM</p>
+      <button id="toggle-theme" class="theme-btn">🌙 Dark Mode</button>
+      <p id="high-score" class="high-score">High Score: 0 WPM</p>
     </div>
-    <p id="countdown">Round 1 of 10</p>
-    <p id="sentence">Press "Start" to begin!</p>
-    <textarea id="input" disabled></textarea>
-    <div class="game-buttons">
-      <button id="start-btn">Start</button>
-      <button id="next-round-btn" style="display: none;">Next Round</button>
-      <button id="quit-btn" style="display: none;">Quit Game</button>
+    <div class="info">
+      <p id="countdown" class="countdown">Round 1 of 10</p>
     </div>
+    <div class="sentence-box">
+      <p id="sentence" class="sentence">Press "Start" to begin!</p>
+    </div>
+    <textarea id="input" class="input-box" placeholder="Start typing here..." disabled></textarea>
     <div class="results">
-      <p id="wpm">WPM: 0</p>
-      <p id="accuracy">Accuracy: 0%</p>
+      <p id="wpm" class="wpm">WPM: 0</p>
+      <p id="accuracy" class="accuracy">Accuracy: 0%</p>
+    </div>
+    <div class="game-buttons">
+      <button id="start-btn" class="action-btn">Start</button>
+      <button id="next-round-btn" class="action-btn" style="display: none;">Next Round</button>
+      <button id="quit-btn" class="action-btn" style="display: none;">Quit Game</button>
     </div>
   </div>
   <script src="script.js"></script>

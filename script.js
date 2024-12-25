@@ -10,6 +10,13 @@ const countdownEl = document.getElementById("countdown");
 const highScoreEl = document.getElementById("high-score");
 const toggleThemeBtn = document.getElementById("toggle-theme");
 
+// New Game Button (added dynamically)
+let newGameBtn = document.createElement("button");
+newGameBtn.textContent = "New Game";
+newGameBtn.style.display = "none";
+newGameBtn.addEventListener("click", startNewGame);
+document.querySelector(".game-buttons").appendChild(newGameBtn);
+
 // Sentences Array
 const sentences = [
   "The quick brown fox jumps over the lazy dog.",
@@ -26,7 +33,7 @@ let currentRound = 1;
 let totalRounds = 10;
 let roundScores = []; // Stores WPM for each round
 let roundAccuracies = []; // Stores accuracy for each round
-let highScore = 0;
+let highScore = 0; // Reset high score for the session
 
 // Random Sentence Generator
 function getRandomSentence() {
@@ -52,6 +59,7 @@ startBtn.addEventListener("click", () => {
   // Hide buttons for new round
   nextRoundBtn.style.display = "none";
   quitBtn.style.display = "inline-block";
+  newGameBtn.style.display = "none"; // Hide "New Game" button during gameplay
 });
 
 // Update Countdown Timer
@@ -138,9 +146,6 @@ function calculateAccuracy(sentence, typedText) {
 function endRound(message) {
   clearInterval(timer);
   inputEl.disabled = true;
-  sentenceEl.textContent = message;
-  startBtn.style.display = "none";
-  nextRoundBtn.style.display = "inline-block";
 
   // Calculate WPM and Accuracy for the round
   const elapsedTime = (new Date().getTime() - startTime) / 1000;
@@ -148,21 +153,39 @@ function endRound(message) {
   const wpm = Math.round((wordCount / elapsedTime) * 60);
   const accuracy = calculateAccuracy(currentSentence, inputEl.value);
 
+  // Add the scores to the arrays
   roundScores.push(wpm);
   roundAccuracies.push(accuracy);
+
+  sentenceEl.textContent = message;
+  startBtn.style.display = "none";
+  nextRoundBtn.style.display = "inline-block";
 }
 
 // Go to Next Round
 nextRoundBtn.addEventListener("click", () => {
   if (currentRound < totalRounds) {
     currentRound++;
+    resetGameForNextRound();
+    countdownEl.textContent = `Round ${currentRound} of ${totalRounds}`;
     startBtn.style.display = "inline-block";
     nextRoundBtn.style.display = "none";
-    countdownEl.textContent = `Round ${currentRound} of ${totalRounds}`;
+    sentenceEl.textContent = "Press 'Start' to begin the next round!";
   } else {
     displayFinalScore();
   }
 });
+
+// Reset Game for Next Round
+function resetGameForNextRound() {
+  clearInterval(timer);
+  timeLeft = 60;
+  wpmEl.textContent = "WPM: 0";
+  accuracyEl.textContent = "Accuracy: 0%";
+  inputEl.value = "";
+  inputEl.disabled = true; // Disable typing until the next round starts
+  sentenceEl.textContent = "";
+}
 
 // Quit Game
 quitBtn.addEventListener("click", () => {
@@ -171,22 +194,64 @@ quitBtn.addEventListener("click", () => {
 
 // Display Final Score
 function displayFinalScore() {
+  // Handle cases where no rounds were completed
+  if (roundScores.length === 0) {
+    sentenceEl.innerHTML = `
+      Game Over!<br>
+      No rounds were completed.<br>
+      Press "New Game" to start again!
+    `;
+    inputEl.disabled = true;
+    startBtn.style.display = "none";
+    nextRoundBtn.style.display = "none";
+    quitBtn.style.display = "none";
+    newGameBtn.style.display = "inline-block"; // Show "New Game" button
+    return;
+  }
+
+  // Calculate Total Score
   const totalScore = roundScores.reduce((sum, score) => sum + score, 0);
+
+  // Calculate Average WPM
   const averageWPM = Math.round(totalScore / roundScores.length);
+
+  // Calculate Average Accuracy
   const totalAccuracy = roundAccuracies.reduce((sum, acc) => sum + acc, 0);
   const averageAccuracy = Math.round(totalAccuracy / roundAccuracies.length);
 
+  // Update High Score for the current session
+  if (totalScore > highScore) {
+    highScore = totalScore;
+    highScoreEl.textContent = `High Score: ${highScore} WPM`;
+  }
+
+  // Display the final results
   sentenceEl.innerHTML = `
     Game Over!<br>
     Total Score: <strong>${totalScore} WPM</strong><br>
     Average WPM: <strong>${averageWPM}</strong><br>
-    Average Accuracy: <strong>${averageAccuracy}%</strong>
+    Average Accuracy: <strong>${averageAccuracy}%</strong><br>
+    <p>Press "New Game" to start again!</p>
   `;
 
   inputEl.disabled = true;
   startBtn.style.display = "none";
   nextRoundBtn.style.display = "none";
   quitBtn.style.display = "none";
+  newGameBtn.style.display = "inline-block"; // Show "New Game" button
+}
+
+// Start New Game
+function startNewGame() {
+  // Reset everything for a fresh game
+  roundScores = [];
+  roundAccuracies = [];
+  currentRound = 1;
+  countdownEl.textContent = `Round ${currentRound} of ${totalRounds}`;
+  sentenceEl.textContent = "Press 'Start' to begin!";
+  resetGame();
+  startBtn.style.display = "inline-block";
+  newGameBtn.style.display = "none"; // Hide "New Game" button
 }
 
 // Reset Game
@@ -198,13 +263,10 @@ function resetGame() {
   nextRoundBtn.style.display = "none";
 }
 
-// Load High Score
+// Reset High Score at the start of the session
 window.onload = () => {
-  const savedHighScore = localStorage.getItem("highScore");
-  if (savedHighScore) {
-    highScore = parseInt(savedHighScore, 10);
-    highScoreEl.textContent = `High Score: ${highScore} WPM`;
-  }
+  highScore = 0; // Reset high score for the session
+  highScoreEl.textContent = `High Score: ${highScore} WPM`;
 };
 
 // Toggle Theme
