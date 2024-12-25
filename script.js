@@ -2,6 +2,8 @@
 const sentenceEl = document.getElementById("sentence");
 const inputEl = document.getElementById("input");
 const startBtn = document.getElementById("start-btn");
+const nextRoundBtn = document.getElementById("next-round-btn");
+const quitBtn = document.getElementById("quit-btn");
 const wpmEl = document.getElementById("wpm");
 const accuracyEl = document.getElementById("accuracy");
 const countdownEl = document.getElementById("countdown");
@@ -20,6 +22,10 @@ const sentences = [
 // Variables
 let startTime, currentSentence, timer;
 let timeLeft = 60;
+let currentRound = 1;
+let totalRounds = 10;
+let roundScores = []; // Stores WPM for each round
+let roundAccuracies = []; // Stores accuracy for each round
 let highScore = 0;
 
 // Random Sentence Generator
@@ -42,6 +48,10 @@ startBtn.addEventListener("click", () => {
   // Record start time and start countdown
   startTime = new Date().getTime();
   timer = setInterval(updateCountdown, 1000);
+
+  // Hide buttons for new round
+  nextRoundBtn.style.display = "none";
+  quitBtn.style.display = "inline-block";
 });
 
 // Update Countdown Timer
@@ -49,7 +59,7 @@ function updateCountdown() {
   timeLeft--;
   countdownEl.textContent = `Time Left: ${timeLeft}s`;
   if (timeLeft <= 0) {
-    endGame("Time's up! Press Start to try again.");
+    endRound("Time's up! Press Next Round to continue.");
   }
 }
 
@@ -65,7 +75,7 @@ inputEl.addEventListener("input", () => {
 
   // Stop the game automatically if the user types the sentence correctly
   if (typedText === currentSentence) {
-    endGame("Great job! You completed the sentence!");
+    endRound("Great job! Round completed.");
   }
 });
 
@@ -78,20 +88,15 @@ function displaySentenceProgress(typedText) {
 
   for (let i = 0; i < sentenceArray.length; i++) {
     if (typedArray[i] === undefined) {
-      // Not yet typed, show as default
       formattedSentence += `<span>${sentenceArray[i]}</span>`;
     } else if (typedArray[i] === sentenceArray[i]) {
-      // Correctly typed character (green)
       formattedSentence += sentenceArray[i] === " " 
         ? `<span style="color: green;"> </span>` 
         : `<span style="color: green;">${sentenceArray[i]}</span>`;
     } else {
-      // Incorrectly typed character
       if (sentenceArray[i] === " ") {
-        // Incorrect space - show space bar symbol (red)
         formattedSentence += `<span style="color: red;">⎵</span>`;
       } else {
-        // Incorrect non-space character
         formattedSentence += `<span style="color: red;">${sentenceArray[i]}</span>`;
       }
     }
@@ -99,8 +104,6 @@ function displaySentenceProgress(typedText) {
 
   sentenceEl.innerHTML = formattedSentence;
 }
-
-
 
 // Update WPM and Accuracy
 function updateStats(typedText) {
@@ -131,22 +134,68 @@ function calculateAccuracy(sentence, typedText) {
   return Math.round((correctChars / sentenceChars.length) * 100);
 }
 
-// End Game
-function endGame(message) {
+// End Current Round
+function endRound(message) {
   clearInterval(timer);
   inputEl.disabled = true;
   sentenceEl.textContent = message;
-  startBtn.disabled = false;
+  startBtn.style.display = "none";
+  nextRoundBtn.style.display = "inline-block";
+
+  // Calculate WPM and Accuracy for the round
+  const elapsedTime = (new Date().getTime() - startTime) / 1000;
+  const wordCount = currentSentence.split(" ").length;
+  const wpm = Math.round((wordCount / elapsedTime) * 60);
+  const accuracy = calculateAccuracy(currentSentence, inputEl.value);
+
+  roundScores.push(wpm);
+  roundAccuracies.push(accuracy);
+}
+
+// Go to Next Round
+nextRoundBtn.addEventListener("click", () => {
+  if (currentRound < totalRounds) {
+    currentRound++;
+    startBtn.style.display = "inline-block";
+    nextRoundBtn.style.display = "none";
+    countdownEl.textContent = `Round ${currentRound} of ${totalRounds}`;
+  } else {
+    displayFinalScore();
+  }
+});
+
+// Quit Game
+quitBtn.addEventListener("click", () => {
+  displayFinalScore();
+});
+
+// Display Final Score
+function displayFinalScore() {
+  const totalScore = roundScores.reduce((sum, score) => sum + score, 0);
+  const averageWPM = Math.round(totalScore / roundScores.length);
+  const totalAccuracy = roundAccuracies.reduce((sum, acc) => sum + acc, 0);
+  const averageAccuracy = Math.round(totalAccuracy / roundAccuracies.length);
+
+  sentenceEl.innerHTML = `
+    Game Over!<br>
+    Total Score: <strong>${totalScore} WPM</strong><br>
+    Average WPM: <strong>${averageWPM}</strong><br>
+    Average Accuracy: <strong>${averageAccuracy}%</strong>
+  `;
+
+  inputEl.disabled = true;
+  startBtn.style.display = "none";
+  nextRoundBtn.style.display = "none";
+  quitBtn.style.display = "none";
 }
 
 // Reset Game
 function resetGame() {
   clearInterval(timer);
   timeLeft = 60;
-  countdownEl.textContent = `Time Left: 60s`;
   wpmEl.textContent = "WPM: 0";
   accuracyEl.textContent = "Accuracy: 0%";
-  startBtn.disabled = true;
+  nextRoundBtn.style.display = "none";
 }
 
 // Load High Score

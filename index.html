@@ -3,25 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HyperType</title>
+  <title>Typing Speed Test Game</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="container">
-    <h1>HyperType</h1>
+    <h1>Typing Speed Test Game</h1>
     <div class="settings">
       <button id="toggle-theme">🌙 Dark Mode</button>
       <p id="high-score">High Score: 0 WPM</p>
     </div>
-    <p id="countdown">Time Left: 60s</p>
-    <p id="sentence"></p> <!-- This displays the sentence with progress -->
-    <textarea id="input" style="opacity: 0; position: absolute;"></textarea> <!-- Hidden input -->
-    <button id="start-btn">Start</button>
+    <p id="countdown">Round 1 of 10</p>
+    <p id="sentence">Press "Start" to begin!</p>
+    <textarea id="input" disabled></textarea>
+    <div class="game-buttons">
+      <button id="start-btn">Start</button>
+      <button id="next-round-btn" style="display: none;">Next Round</button>
+      <button id="quit-btn" style="display: none;">Quit Game</button>
+    </div>
     <div class="results">
       <p id="wpm">WPM: 0</p>
       <p id="accuracy">Accuracy: 0%</p>
     </div>
-  </div>  
+  </div>
   <script src="script.js"></script>
 </body>
 </html>
