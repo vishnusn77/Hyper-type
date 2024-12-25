@@ -78,19 +78,29 @@ function displaySentenceProgress(typedText) {
 
   for (let i = 0; i < sentenceArray.length; i++) {
     if (typedArray[i] === undefined) {
-      // If not yet typed, show in default color
+      // Not yet typed, show as default
       formattedSentence += `<span>${sentenceArray[i]}</span>`;
     } else if (typedArray[i] === sentenceArray[i]) {
       // Correctly typed character (green)
-      formattedSentence += `<span style="color: green;">${sentenceArray[i]}</span>`;
+      formattedSentence += sentenceArray[i] === " " 
+        ? `<span style="color: green;"> </span>` 
+        : `<span style="color: green;">${sentenceArray[i]}</span>`;
     } else {
-      // Incorrectly typed character (red)
-      formattedSentence += `<span style="color: red;">${sentenceArray[i]}</span>`;
+      // Incorrectly typed character
+      if (sentenceArray[i] === " ") {
+        // Incorrect space - show space bar symbol (red)
+        formattedSentence += `<span style="color: red;">⎵</span>`;
+      } else {
+        // Incorrect non-space character
+        formattedSentence += `<span style="color: red;">${sentenceArray[i]}</span>`;
+      }
     }
   }
 
   sentenceEl.innerHTML = formattedSentence;
 }
+
+
 
 // Update WPM and Accuracy
 function updateStats(typedText) {
