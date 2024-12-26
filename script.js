@@ -42,9 +42,22 @@ let roundScores = []; // Stores WPM for each round
 let roundAccuracies = []; // Stores accuracy for each round
 let highScore = 0; // Reset high score for the session
 
-// Random Sentence Generator
+// Shuffle Function
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]]; // Swap elements
+  }
+  return array;
+}
+
+// Shuffle sentences before the game starts
+let shuffledSentences = shuffleArray([...sentences]); // Create a shuffled copy
+
+
+// Get the sentence for the current round
 function getRandomSentence() {
-  return sentences[currentRound - 1]; // Use current round to pick the sentence in order
+  return shuffledSentences[currentRound - 1]; // Use the shuffled array
 }
 
 // Start Game
@@ -261,6 +274,7 @@ function startNewGame() {
   roundScores = [];
   roundAccuracies = [];
   currentRound = 1;
+  shuffledSentences = shuffleArray([...sentences]); // Shuffle again for a new game
   countdownEl.textContent = `Round ${currentRound} of ${totalRounds}`;
   sentenceEl.textContent = "Press 'Start' to begin!";
   resetGame();
